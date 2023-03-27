@@ -1,4 +1,5 @@
 <script>
+  import { Label, Input, Button } from "flowbite-svelte";
   import { NewEventStore } from "./EventStore.js";
   import { DateInput, localeFromDateFnsLocale } from "date-picker-svelte";
   import { enIN } from "date-fns/locale";
@@ -12,27 +13,29 @@
   };
 </script>
 
-<h1>Event Creation Form</h1>
-<form class="content">
-  <table>
-    <tr>
-      <td><label for="name" />Name:</td><td><input id="name" type="text" bind:value={$NewEventStore.name} /> </td>
-    </tr>
-    <tr>
-      <td><label for="place" />Place:</td><td><input id="place" type="text" bind:value={$NewEventStore.place} /></td>
-    </tr>
+<div class=" flex flex-col items-center justify-center gap-9">
+  <h1>Satsang Event Creation Form</h1>
+  <form class="flex flex-col gap-2">
+    <div class="flex flex-row gap-4">
+      <div><Label class="block mb-2" for="name" />Name:</div>
+      <div><Input id="name" type="text" bind:value={$NewEventStore.name} /></div>
+    </div>
+    <div class="flex flex-row gap-4">
+      <div><Label for="place" />Place:</div>
+      <div><Input id="place" type="text" bind:value={$NewEventStore.place} /></div>
+    </div>
     <!-- svelte-ignore a11y-label-has-associated-control -->
-    <tr>
-      <td><label for="date" />Date:</td>
-      <td>
+    <div class="flex flex-row gap-4">
+      <div><Label for="date" />Date:</div>
+      <div>
         <DateInput closeOnSelection {locale} format="dd-MM-yyyy HH:mm" placeholder="Select Date 🗓️" bind:value={$NewEventStore.date} />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="MenuItems"> Menu Items: </label>
-      </td>
-      <td>
+      </div>
+    </div>
+    <div class="flex flex-row gap-4 ">
+      <div>
+        <Label for="MenuItems" />Menu Items:
+      </div>
+      <div>
         <MultiSelect
           id="MenuItems"
           options={MenuItems}
@@ -50,31 +53,37 @@
           <MenuItemSlot let:idx {idx} let:option {option} slot="selected" />
           <MenuItemSlot let:idx {idx} let:option {option} slot="option" />
         </MultiSelect>
-      </td>
-    </tr>
-    <tr>
-      <td><label for="host" />Host:</td><td><input id="host" type="text" bind:value={$NewEventStore.host} /> </td>
-    </tr>
-    <tr>
-      <td><label for="phone" />Phone Number:</td><td><input id="phone" type="text" bind:value={$NewEventStore.phone} /> </td>
-    </tr>
-    <tr>
-      <td><label for="count" />Count:</td><td><input id="count" type="text" bind:value={$NewEventStore.count} /> </td>
-    </tr>
-    <tr>
-      <td><label for="totalExpense" />Total Expense:</td><td><input id="totalExpense" type="text" bind:value={$NewEventStore.totalExpense} /> </td>
-    </tr>
-    <tr>
-      <td><label for="receivedAmount" />Received Amount:</td><td><input id="receivedAmount" type="text" bind:value={$NewEventStore.receivedAmount} /> </td>
-    </tr>
-  </table>
-  <button type="submit" on:click|preventDefault={handleSubmit}>Submit</button>
-</form>
-<p>
-  {JSON.stringify($NewEventStore)}
-</p>
+      </div>
+    </div>
+    <div class="flex flex-row gap-4">
+      <div><Label for="host" />Host:</div>
+      <div><Input id="host" type="text" bind:value={$NewEventStore.host} /></div>
+    </div>
+    <div class="flex flex-row gap-4">
+      <div><Label for="phone" />Phone Number:</div>
+      <div><Input id="phone" type="text" bind:value={$NewEventStore.phone} /></div>
+    </div>
+    <div class="flex flex-row gap-4">
+      <div><Label for="count" />Count:</div>
+      <div><Input id="count" type="text" bind:value={$NewEventStore.count} /></div>
+    </div>
+    <div class="flex flex-row gap-4">
+      <div><Label for="totalExpense" />Total Expense:</div>
+      <div><Input id="totalExpense" type="text" bind:value={$NewEventStore.totalExpense} /></div>
+    </div>
+    <div class="flex flex-row gap-4">
+      <div><Label for="receivedAmount" />Received Amount:</div>
+      <div><Input id="receivedAmount" type="text" bind:value={$NewEventStore.receivedAmount} /></div>
+    </div>
 
-<style>
+    <Button gradient color="purpleToBlue" on:click={handleSubmit}>Submit</Button>
+  </form>
+  <p>
+    {JSON.stringify($NewEventStore)}
+  </p>
+</div>
+
+<!-- <style>
   .content {
     display: flex;
     flex-direction: column;
@@ -86,7 +95,7 @@
     box-sizing: border-box;
     --sms-selected-bg: rgba(40, 0, 80, 0.1);
   }
-  label {
+  Label {
     margin: 2em 0 1ex;
   }
-</style>
+</style> -->
