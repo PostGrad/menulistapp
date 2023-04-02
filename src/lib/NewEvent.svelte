@@ -1,14 +1,39 @@
 <script>
-  import { Label, Input, Button } from "flowbite-svelte";
+  import { Label, Input, Button, NumberInput } from "flowbite-svelte";
   import { NewEventStore } from "./EventStore.js";
   import { DateInput, localeFromDateFnsLocale } from "date-picker-svelte";
   import { enIN } from "date-fns/locale";
   import MultiSelect from "svelte-multiselect";
   import MenuItemSlot from "./MenuItemSlot.svelte";
   import { MenuItems } from "./EventStore";
+  import * as yup from "yup";
+
   let locale = localeFromDateFnsLocale(enIN);
-  let handleSubmit = (e) => {
-    //e.preventDefaults();
+  let errors = {};
+  const schema = yup.object().shape({
+    name: yup.string().required("Name is required."),
+    date: yup.date().required("Date is required."),
+    menuItems: yup.array().min(1, "Menu items are required."),
+    count: yup.number().positive("Count must be positive number."),
+    totalExpense: yup.number().positive("Total expense must be positive number."),
+    receivedAmount: yup.number().positive("Received amount must be positive number."),
+  });
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("inside try");
+
+      await schema.validate($NewEventStore, { abortEarly: false });
+      console.log("after validate call");
+
+      errors = {};
+    } catch (err) {
+      errors = err.inner.reduce((acc, err) => {
+        console.log(err);
+        return { ...acc, [err.path]: err.message };
+      }, {});
+    }
     console.log($NewEventStore);
   };
 </script>
@@ -23,12 +48,18 @@
           <div>
             <div><Label class="block mb-2" for="name" />Name:</div>
             <div><Input class="flex-1" id="name" type="text" bind:value={$NewEventStore.name} /></div>
+            {#if errors.name}
+              <span class="text-sm text-red-600">{errors.name}</span>
+            {/if}
           </div>
 
           <div>
             <div><Label class="block mb-2" for="date" />Date:</div>
             <div>
               <DateInput closeOnSelection {locale} format="dd-MM-yyyy" placeholder="Select Date 🗓️" bind:value={$NewEventStore.date} />
+              {#if errors.date}
+                <span class="text-sm text-red-600">{errors.date ? "Date is required." : ""}</span>
+              {/if}
             </div>
           </div>
         </div>
@@ -50,16 +81,14 @@
               allowUserOptions={false}
               selected={[]}
               bind:value={$NewEventStore.menuItems}
-              on:add={(event) => {
-                // if you want to persist new user entered custom options to a database, perform
-                // a fetch request with type POST here using the event.detail.option payload
-                console.log(event.detail.option);
-              }}
-              required
+              required={true}
             >
               <MenuItemSlot let:idx {idx} let:option {option} slot="selected" />
               <MenuItemSlot let:idx {idx} let:option {option} slot="option" />
             </MultiSelect>
+            {#if errors.menuItems}
+              <span class="text-sm text-red-600">{errors.menuItems}</span>
+            {/if}
           </div>
         </div>
         <div class="mb-6">
@@ -73,15 +102,24 @@
           </div>
           <div>
             <div><Label class="block mb-2" for="count" />Count:</div>
-            <div><Input id="count" type="text" bind:value={$NewEventStore.count} /></div>
+            <div><NumberInput id="count" type="text" bind:value={$NewEventStore.count} /></div>
+            {#if errors.count}
+              <span class="text-sm text-red-600">{errors.count}</span>
+            {/if}
           </div>
           <div>
             <div><Label class="block mb-2" for="totalExpense" />Total Expense:</div>
-            <div><Input id="totalExpense" type="text" bind:value={$NewEventStore.totalExpense} /></div>
+            <div><NumberInput id="totalExpense" type="text" bind:value={$NewEventStore.totalExpense} /></div>
+            {#if errors.totalExpense}
+              <span class="text-sm text-red-600">{errors.totalExpense}</span>
+            {/if}
           </div>
           <div>
             <div><Label class="block mb-2" for="receivedAmount" />Received Amount:</div>
-            <div><Input id="receivedAmount" type="text" bind:value={$NewEventStore.receivedAmount} /></div>
+            <div><NumberInput id="receivedAmount" type="text" bind:value={$NewEventStore.receivedAmount} /></div>
+            {#if errors.receivedAmount}
+              <span class="text-sm text-red-600">{errors.receivedAmount}</span>
+            {/if}
           </div>
         </div>
 
