@@ -31,6 +31,7 @@
     "flowbite": "^1.6.4",
     "flowbite-svelte": "^0.34.2",
     "svelte-multiselect": "^8.6.0",
+    "svelte-sidebar-menu": "^0.9.12",
     "yup": "^1.0.2"
   }
 }
